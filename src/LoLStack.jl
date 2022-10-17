@@ -1,5 +1,7 @@
 module LoLStack
 
+export blockstack, lolstack
+
 """
     blockstack(array_of_arrays)
 
