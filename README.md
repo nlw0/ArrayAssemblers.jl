@@ -2,10 +2,10 @@
 
 ArrayAssemblers offers two methods to assemble arrays and higher-order tensors out of arrays-of-arrays.
 
-The motivation for this package are two use patterns that can be useful in practice:
+The motivation for this package comes mostly from two use patterns:
 
-1. Implementing an alternative to a `flatmap` functor that works essentially the same as `[y for x in c1 for y in f(x)]`. It produces an array and supports do-syntax.
-2. Implementing a shortcut for `hcat(vector_of_vectors...)` or `reduce(hcat, vector_of_vectors)` that also supports do-syntax.
+1. `block(f, a)` is an alternative to a `flatmap` functor. It works essentially the same as `[y for x in c1 for y in f(x)]`. It produces an array and supports do-syntax.
+2. `lolcat(f, a)` works as a shortcut for `hcat(vector_of_vectors...)` or `reduce(hcat, vector_of_vectors)`, but it also supports do-syntax and cat take generators.
 
 ## Examples
 ```
