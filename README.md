@@ -48,8 +48,8 @@ julia> lolcat(a:a+1 for a in 1:2:6)
  1  3  5
  2  4  6
 
-julia> ## flatmap behavior with `block`
-       Zn = block(1:3) do n
+## flatmap behavior with `block`
+julia> Zn = block(1:3) do n
            -n:2:n
        end
 9-element Vector{Int64}:
@@ -66,7 +66,7 @@ julia> ## flatmap behavior with `block`
 julia> Zn == [x for n in 1:3 for x in -n:2:n]
 true
 
-## Assembling a tensors with `lolcat` using do-syntax
+## Assembling a tensor with `lolcat` using do-syntax
 julia> lolcat(0:1) do c
            map(0:2) do b
                map(1:2) do a
