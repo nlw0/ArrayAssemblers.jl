@@ -91,4 +91,4 @@ using TestImages, ImageView
 myimages = ["cameraman" "plastic_bubbles_he_512" "woman_darkhair"; "resolution_test_512" "pirate" "walkbridge"]
 imshow(block(testimage.(myimages)))
 ```
-![Image montage example](docs/imagemontage.png)
+![Image montage example](docs/src/imagemontage.png)
