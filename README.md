@@ -84,3 +84,11 @@ julia> lolcat(0:1) do c
  7   9  11
  8  10  12
 ```
+
+Image montage (tiling):
+```
+using TestImages, ImageView
+myimages = ["cameraman" "plastic_bubbles_he_512" "woman_darkhair"; "resolution_test_512" "pirate" "walkbridge"]
+imshow(block(testimage.(myimages)))
+```
+![Image montage example](docs/imagemontage.png)
