@@ -1,6 +1,6 @@
 module ArrayAssemblers
 
-export block, lolcat
+export block, lolcat, lay
 
 """
     block(array_of_arrays)
@@ -206,7 +206,8 @@ julia> arr == block([(j,k,l) for j in 1:2, k in 1:2, l in 1:2]) do (jkl)
 true
 ```
 """
-block(array_of_arrays) = block_(array_of_arrays)
+block(a::AbstractArray{<:AbstractArray}) = Base.hvncat(size(a), false, a...)
+# block(array_of_arrays) = block_(array_of_arrays)
 
 """
     block(f, c...)
@@ -233,14 +234,14 @@ true
 """
 block(f, c...) = block(map(f, c...))
 
-function block_(aoa; indices=(), mydim=ndims(aoa))
-    if mydim==1
-        reduce(catdim_(mydim), view(aoa,:,indices...))
-    else
-        reduce(catdim_(mydim), (block_(aoa, indices=(n, indices...), mydim=mydim-1) for n in 1:size(aoa, mydim)))
-    end
-end
-catdim_(dims) = (a,b) -> cat(a,b,dims=dims)
+# function block_(aoa; indices=(), mydim=ndims(aoa))
+#     if mydim==1
+#         reduce(catdim_(mydim), view(aoa,:,indices...))
+#     else
+#         reduce(catdim_(mydim), (block_(aoa, indices=(n, indices...), mydim=mydim-1) for n in 1:size(aoa, mydim)))
+#     end
+# end
+# catdim_(dims) = (a,b) -> cat(a,b,dims=dims)
 
 """
     lolcat(list_of_lists)
@@ -305,5 +306,24 @@ function lolcat_(gg; myshape=(), outersize=nothing)
         lolcat_(Iterators.flatten(gg), myshape=(size(head)..., myshape..., ), outersize=outersize)
     end
 end
+
+
+lay(iter) = _lay(iter)
+
+lay(f, iter) = _lay(f(x) for x in iter)
+lay(f, xs, yzs...) = _lay(f(xy...) for xy in zip(xs, yzs...))
+lay(f, iter; dims) = _lay(dims, f(x) for x in iter)
+lay(f, xs, yzs...; dims) = _lay(dims, f(xy...) for xy in zip(xs, yzs...))
+
+_lay(iter) = _lay(1 + ndims(first(iter)), iter)
+function _lay(dims::Integer, iter)
+    elsize = size(first(iter))
+    newsize = (elsize[1:dims-1]..., 1, elsize[dims:end]...)
+    hvncat(dims, reshape.(iter, newsize...)...)
+end
+
+# mystack(a) = hvncat(size(first(a))...,length(a))
+# mystack(a) = hvncat(ndims(first(a))+1, a...)
+# mystack(a) = hvncat(ndims(first(a))+1, a...)
 
 end # module ArrayAssemblers
