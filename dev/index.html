@@ -1,162 +1,5 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>ArrayAssemblers.jl Documentation · ArrayAssemblers.jl</title><script data-outdated-warner src="assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.045/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.24/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="assets/documenter.js"></script><script src="siteinfo.js"></script><script src="../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href>ArrayAssemblers.jl</a></span></div><form class="docs-search" action="search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li class="is-active"><a class="tocitem" href>ArrayAssemblers.jl Documentation</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li class="is-active"><a href>ArrayAssemblers.jl Documentation</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>ArrayAssemblers.jl Documentation</a></li></ul></nav><div class="docs-right"><a class="docs-edit-link" href="https://github.com/nlw0/ArrayAssemblers.jl/blob/main/docs/src/index.md" title="Edit on GitHub"><span class="docs-icon fab"></span><span class="docs-label is-hidden-touch">Edit on GitHub</span></a><a class="docs-settings-button fas fa-cog" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-sidebar-button fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><h1 id="ArrayAssemblers.jl-Documentation"><a class="docs-heading-anchor" href="#ArrayAssemblers.jl-Documentation">ArrayAssemblers.jl Documentation</a><a id="ArrayAssemblers.jl-Documentation-1"></a><a class="docs-heading-anchor-permalink" href="#ArrayAssemblers.jl-Documentation" title="Permalink"></a></h1><article class="docstring"><header><a class="docstring-binding" id="ArrayAssemblers.block-Tuple{Any}" href="#ArrayAssemblers.block-Tuple{Any}"><code>ArrayAssemblers.block</code></a> — <span class="docstring-category">Method</span></header><section><div><pre><code class="language-julia hljs">block(array_of_arrays)</code></pre><p>Concatenates a multi-dimensional array of arrays into a single array, seeing the input as a block array. The dimensions of the sub-arrays must match accordingly.</p><p><strong>Examples</strong></p><p>Simple concatenation of vectors</p><pre><code class="language-julia-repl hljs">julia&gt; reduce(hcat, [[1,2,3], [4,5,6]])
-3×2 Matrix{Int64}:
- 1  4
- 2  5
- 3  6
-
-julia&gt; block(reshape([[1,2,3], [4,5,6]], 1, :))
-6-element Vector{Int64}:
- 1  4
- 2  5
- 3  6
-
-julia&gt; block([[1,2,3], [4,5,6]])
-6-element Vector{Int64}:
- 1
- 2
- 3
- 4
- 5
- 6
-
-julia&gt; vcat([1,2,3]&#39;, [4,5,6]&#39;)
-3×2 Matrix{Int64}:
- 1  2  3
- 4  5  6
-
-julia&gt; block([[1,2,3]&#39;, [4,5,6]&#39;])
-2×3 Matrix{Int64}:
- 1  2  3
- 4  5  6
-
-julia&gt; block([[1,2,3], [4,5,6]]&#39;)
-1×6 Matrix{Int64}:
- 1  2  3  4  5  6</code></pre><p>&quot;Flatmap&quot; behavior.</p><pre><code class="language-julia-repl hljs">julia&gt; block(n -&gt; -n:2:n, 1:3)
-9-element Vector{Int64}:
- -1
-  1
- -2
-  0
-  2
- -3
- -1
-  1
-  3</code></pre><p>Image montage.</p><pre><code class="nohighlight hljs">using TestImages, ImageView
-myimages = [&quot;cameraman&quot; &quot;plastic_bubbles_he_512&quot; &quot;woman_darkhair&quot;; &quot;resolution_test_512&quot; &quot;pirate&quot; &quot;walkbridge&quot;]
-imshow(block(testimage.(myimages)))</code></pre><p><strong>Extended Help</strong></p><p><strong>More Examples</strong></p><p>Higher-dimension concatenation.</p><pre><code class="language-julia-repl hljs">julia&gt; block([1 2]) do n reshape(n*4-3:n*4, 2, 2) end
-2×4 Matrix{Int64}:
- 1  3  5  7
- 2  4  6  8
-
-julia&gt; block([1, 2]) do n reshape(n*4-3:n*4, 2, 2) end
-4×2 Matrix{Int64}:
- 1  3
- 2  4
- 5  7
- 6  8
-
-julia&gt; block([1;;; 2;;;]) do n reshape(n*4-3:n*4, 2, 2) end
-2×2×2 Array{Int64, 3}:
-[:, :, 1] =
- 1  3
- 2  4
-
-[:, :, 2] =
- 5  7
- 6  8</code></pre><p>Relationship to <code>eachcol</code> and <code>eachrow</code>.</p><pre><code class="language-julia-repl hljs">julia&gt; m = reshape(1:15,3,5)
-3×5 reshape(::UnitRange{Int64}, 3, 5) with eltype Int64:
- 1  4  7  10  13
- 2  5  8  11  14
- 3  6  9  12  15
-
-julia&gt; lol = eachcol(m) |&gt; collect
-5-element Vector{SubArray{Int64, 1, Base.ReshapedArray{Int64, 2, UnitRange{Int64}, Tuple{}}, Tuple{Base.Slice{Base.OneTo{Int64}}, Int64}, true}}:
- [1, 2, 3]
- [4, 5, 6]
- [7, 8, 9]
- [10, 11, 12]
- [13, 14, 15]
-
-julia&gt; block(lol)
-15-element Vector{Int64}:
-  1
-  2
-  3
-  4
-  5
-  6
-  7
-  8
-  9
- 10
- 11
- 12
- 13
- 14
- 15
-
-julia&gt; block(lol&#39;)
-1×15 Matrix{Int64}:
- 1  2  3  4  5  6  7  8  9  10  11  12  13  14  15
-
-julia&gt; block(permutedims(lol))
-3×5 Matrix{Int64}:
- 1  4  7  10  13
- 2  5  8  11  14
- 3  6  9  12  15
-
-julia&gt; lol = eachrow(m) |&gt; collect
-3-element Vector{SubArray{Int64, 1, Base.ReshapedArray{Int64, 2, UnitRange{Int64}, Tuple{}}, Tuple{Int64, Base.Slice{Base.OneTo{Int64}}}, true}}:
- [1, 4, 7, 10, 13]
- [2, 5, 8, 11, 14]
- [3, 6, 9, 12, 15]
-
-julia&gt; block(permutedims(lol))
-5×3 Matrix{Int64}:
-  1   2   3
-  4   5   6
-  7   8   9
- 10  11  12
- 13  14  15
-
-julia&gt; block(permutedims.(lol))
-3×5 Matrix{Int64}:
- 1  4  7  10  13
- 2  5  8  11  14
- 3  6  9  12  15</code></pre><p>Non-uniform array shapes with 3 dimensions.</p><pre><code class="language-julia-repl hljs">julia&gt; myarrays = map([(j,k,l) for j in 1:2, k in 1:2, l in 1:2]) do (jkl)
-           reshape(1:prod((jkl)), jkl...)
-       end
-2×2×2 Array{Base.ReshapedArray{Int64, 3, UnitRange{Int64}, Tuple{}}, 3}:
-[:, :, 1] =
- [1;;;]     [1 2;;;]
- [1; 2;;;]  [1 3; 2 4;;;]
-
-[:, :, 2] =
- [1;;; 2]        [1 2;;; 3 4]
- [1; 2;;; 3; 4]  [1 3; 2 4;;; 5 7; 6 8]
-
-julia&gt; arr = block(myarrays)
-3×3×3 Array{Int64, 3}:
-[:, :, 1] =
- 1  1  2
- 1  1  3
- 2  2  4
-
-[:, :, 2] =
- 1  1  2
- 1  1  3
- 2  2  4
-
-[:, :, 3] =
- 2  3  4
- 3  5  7
- 4  6  8
-
-julia&gt; arr == block([(j,k,l) for j in 1:2, k in 1:2, l in 1:2]) do (jkl)
-           reshape(1:prod((jkl)), jkl...)
-       end
-true</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/nlw0/ArrayAssemblers.jl/blob/ece4aba48b95e8447558ce416927c1086a72c67e/src/ArrayAssemblers.jl#L5-L208">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="ArrayAssemblers.block-Tuple{Any, Any}" href="#ArrayAssemblers.block-Tuple{Any, Any}"><code>ArrayAssemblers.block</code></a> — <span class="docstring-category">Method</span></header><section><div><pre><code class="language-julia hljs">block(f, c...)</code></pre><p>Equivalent to block(map(f, c...)). Implements flatmap behavior.</p><p><strong>Example</strong></p><pre><code class="language-julia-repl hljs">julia&gt; Zn = [x for n in 1:3 for x in -n:2:n]
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>ArrayAssemblers.jl Documentation · ArrayAssemblers.jl</title><script data-outdated-warner src="assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.045/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.24/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="assets/documenter.js"></script><script src="siteinfo.js"></script><script src="../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href>ArrayAssemblers.jl</a></span></div><form class="docs-search" action="search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li class="is-active"><a class="tocitem" href>ArrayAssemblers.jl Documentation</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li class="is-active"><a href>ArrayAssemblers.jl Documentation</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>ArrayAssemblers.jl Documentation</a></li></ul></nav><div class="docs-right"><a class="docs-edit-link" href="https://github.com/nlw0/ArrayAssemblers.jl/blob/main/docs/src/index.md" title="Edit on GitHub"><span class="docs-icon fab"></span><span class="docs-label is-hidden-touch">Edit on GitHub</span></a><a class="docs-settings-button fas fa-cog" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-sidebar-button fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><h1 id="ArrayAssemblers.jl-Documentation"><a class="docs-heading-anchor" href="#ArrayAssemblers.jl-Documentation">ArrayAssemblers.jl Documentation</a><a id="ArrayAssemblers.jl-Documentation-1"></a><a class="docs-heading-anchor-permalink" href="#ArrayAssemblers.jl-Documentation" title="Permalink"></a></h1><article class="docstring"><header><a class="docstring-binding" id="ArrayAssemblers.block-Tuple{Any}" href="#ArrayAssemblers.block-Tuple{Any}"><code>ArrayAssemblers.block</code></a> — <span class="docstring-category">Method</span></header><section><div><pre><code class="language-julia hljs">block(f, c...)</code></pre><p>Equivalent to block(map(f, c...)). Implements flatmap behavior.</p><p><strong>Example</strong></p><pre><code class="language-julia-repl hljs">julia&gt; Zn = [x for n in 1:3 for x in -n:2:n]
 9-element Vector{Int64}:
  -1
   1
@@ -169,7 +12,20 @@ true</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://
   3
 
 julia&gt; block(n -&gt; -n:2:n, 1:3) == Zn
-true</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/nlw0/ArrayAssemblers.jl/blob/ece4aba48b95e8447558ce416927c1086a72c67e/src/ArrayAssemblers.jl#L211-L233">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="ArrayAssemblers.lolcat-Tuple{Any}" href="#ArrayAssemblers.lolcat-Tuple{Any}"><code>ArrayAssemblers.lolcat</code></a> — <span class="docstring-category">Method</span></header><section><div><pre><code class="language-julia hljs">lolcat(list_of_lists)</code></pre><p>Assembles a tensor of order <code>ndim</code> from a nested array-of-arrays. Vector sizes must match.</p><p>Same as <code>stack(x)</code> for simple arrays-of-arrays. With more levels of nested collections, <code>lolcat</code> traverses the input like a tree, ceating new dimensions for each level.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; lolcat([[[1,2],[3,4]], [[5,6],[7,8]]])
+true</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/nlw0/ArrayAssemblers.jl/blob/e7948eccaa00caf4e8d4592fa50e16701b3e6608/src/ArrayAssemblers.jl#L212-L234">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="ArrayAssemblers.block-Tuple{Any, Any}" href="#ArrayAssemblers.block-Tuple{Any, Any}"><code>ArrayAssemblers.block</code></a> — <span class="docstring-category">Method</span></header><section><div><pre><code class="language-julia hljs">block(f, c...)</code></pre><p>Equivalent to block(map(f, c...)). Implements flatmap behavior.</p><p><strong>Example</strong></p><pre><code class="language-julia-repl hljs">julia&gt; Zn = [x for n in 1:3 for x in -n:2:n]
+9-element Vector{Int64}:
+ -1
+  1
+ -2
+  0
+  2
+ -3
+ -1
+  1
+  3
+
+julia&gt; block(n -&gt; -n:2:n, 1:3) == Zn
+true</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/nlw0/ArrayAssemblers.jl/blob/e7948eccaa00caf4e8d4592fa50e16701b3e6608/src/ArrayAssemblers.jl#L212-L234">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="ArrayAssemblers.lolcat-Tuple{Any}" href="#ArrayAssemblers.lolcat-Tuple{Any}"><code>ArrayAssemblers.lolcat</code></a> — <span class="docstring-category">Method</span></header><section><div><pre><code class="language-julia hljs">lolcat(list_of_lists)</code></pre><p>Assembles a tensor of order <code>ndim</code> from a nested array-of-arrays. Vector sizes must match.</p><p>Same as <code>stack(x)</code> for simple arrays-of-arrays. With more levels of nested collections, <code>lolcat</code> traverses the input like a tree, ceating new dimensions for each level.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl hljs">julia&gt; lolcat([[[1,2],[3,4]], [[5,6],[7,8]]])
 2×2×2 Array{Int64, 3}:
 [:, :, 1] =
  1  3
@@ -225,4 +81,4 @@ julia&gt; lolcat((j,k) for j in 1:4, k in 5:6) do (j,k)
 julia&gt; myxor == [xor(a,b,c) for a in 0:3, b in 0:7, c in 0:1]
 true</code></pre><p>Stacking images. (Same behavior as <code>stack</code>.)</p><pre><code class="language-julia hljs">using TestImages, ImageView
 myimages = [&quot;cameraman&quot;, &quot;plastic_bubbles_he_512&quot;, &quot;woman_darkhair&quot;, &quot;resolution_test_512&quot;, &quot;pirate&quot;, &quot;walkbridge&quot;]
-imshow(Gray.(lolcat(testimage.(myimages[:]))))</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/nlw0/ArrayAssemblers.jl/blob/ece4aba48b95e8447558ce416927c1086a72c67e/src/ArrayAssemblers.jl#L245-L325">source</a></section></article></article><nav class="docs-footer"><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.23 on <span class="colophon-date" title="Tuesday 25 October 2022 17:37">Tuesday 25 October 2022</span>. Using Julia version 1.6.7.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+imshow(Gray.(lolcat(testimage.(myimages[:]))))</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/nlw0/ArrayAssemblers.jl/blob/e7948eccaa00caf4e8d4592fa50e16701b3e6608/src/ArrayAssemblers.jl#L246-L326">source</a></section></article></article><nav class="docs-footer"><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.23 on <span class="colophon-date" title="Friday 28 October 2022 07:59">Friday 28 October 2022</span>. Using Julia version 1.6.7.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
