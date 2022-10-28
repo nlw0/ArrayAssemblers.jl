@@ -1,6 +1,6 @@
 module ArrayAssemblers
 
-export block, lolcat, lay
+export block, lolcat, lay, eachfiber
 
 """
     block(array_of_arrays)
@@ -348,10 +348,10 @@ end
 
 lay(iter) = _lay(iter)
 
-lay(f, iter) = _lay(f(x) for x in iter)
-lay(f, xs, yzs...) = _lay(f(xy...) for xy in zip(xs, yzs...))
 lay(f, iter; dims) = _lay(dims, f(x) for x in iter)
+lay(f, iter) = _lay(f(x) for x in iter)
 lay(f, xs, yzs...; dims) = _lay(dims, f(xy...) for xy in zip(xs, yzs...))
+lay(f, xs, yzs...) = _lay(f(xy...) for xy in zip(xs, yzs...))
 
 _lay(iter) = _lay(1 + ndims(first(iter)), iter)
 function _lay(dims::Integer, iter)
@@ -363,5 +363,13 @@ end
 # mystack(a) = hvncat(size(first(a))...,length(a))
 # mystack(a) = hvncat(ndims(first(a))+1, a...)
 # mystack(a) = hvncat(ndims(first(a))+1, a...)
+
+function eachfiber(A; dim=1)
+    pr = Iterators.product(ntuple(n->axes(A, n < dim ? n : n+1), ndims(A)-1)...)
+    map(pr) do x
+        view(A, ntuple(n->(n < dim ? x[n] : (n == dim ? Colon() : x[n-1])), ndims(A))...)
+    end
+end
+
 
 end # module ArrayAssemblers
