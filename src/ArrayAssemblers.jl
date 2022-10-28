@@ -206,8 +206,7 @@ julia> arr == block([(j,k,l) for j in 1:2, k in 1:2, l in 1:2]) do (jkl)
 true
 ```
 """
-block(a::AbstractArray{<:AbstractArray}) = Base.hvncat(size(a), false, a...)
-# block(array_of_arrays) = block_(array_of_arrays)
+block(a) = Base.hvncat(size(a), false, a...)
 
 """
     block(f, c...)
@@ -232,7 +231,7 @@ julia> block(n -> -n:2:n, 1:3) == Zn
 true
 ```
 """
-block(f, c...) = block(map(f, c...))
+block(f, xx, xs...) = block(map(f, xx, xs...))
 
 # function block_(aoa; indices=(), mydim=ndims(aoa))
 #     if mydim==1
@@ -330,7 +329,7 @@ lolcat(array_of_arrays) =
     else
         lolcat_(array_of_arrays)
     end
-lolcat(f, c...) = lolcat(Iterators.map(f, c...))
+lolcat(f, xx, xs...) = lolcat(Iterators.map(f, xx, xs...))
 function lolcat_(gg; myshape=(), outersize=nothing)
     head, tail = Iterators.peel(gg)
     # if dimlen == 1
@@ -350,8 +349,8 @@ lay(iter) = _lay(iter)
 
 lay(f, iter; dims) = _lay(dims, f(x) for x in iter)
 lay(f, iter) = _lay(f(x) for x in iter)
-lay(f, xs, yzs...; dims) = _lay(dims, f(xy...) for xy in zip(xs, yzs...))
-lay(f, xs, yzs...) = _lay(f(xy...) for xy in zip(xs, yzs...))
+lay(f, xx, xs...; dims) = _lay(dims, f(xy...) for xy in zip(xx, xs...))
+lay(f, xx, xs...) = _lay(f(xy...) for xy in zip(xx, xs...))
 
 _lay(iter) = _lay(1 + ndims(first(iter)), iter)
 function _lay(dims::Integer, iter)
