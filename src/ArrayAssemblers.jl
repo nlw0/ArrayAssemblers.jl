@@ -345,6 +345,7 @@ function lolcat_(gg; myshape=(), outersize=nothing)
 end
 
 
+
 lay(iter) = _lay(iter)
 
 lay(f, iter; dims) = _lay(dims, f(x) for x in iter)
@@ -358,10 +359,6 @@ function _lay(dims::Integer, iter)
     newsize = (elsize[1:dims-1]..., 1, elsize[dims:end]...)
     hvncat(dims, reshape.(iter, newsize...)...)
 end
-
-# mystack(a) = hvncat(size(first(a))...,length(a))
-# mystack(a) = hvncat(ndims(first(a))+1, a...)
-# mystack(a) = hvncat(ndims(first(a))+1, a...)
 
 function eachfiber(A; dim=1)
     pr = Iterators.product(ntuple(n->axes(A, n < dim ? n : n+1), ndims(A)-1)...)
