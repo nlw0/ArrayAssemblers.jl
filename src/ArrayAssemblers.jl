@@ -1,6 +1,6 @@
 module ArrayAssemblers
 
-export block, lolcat, lay, eachfiber
+export block, lolcat, lay, eachfiber, smthmap, montage
 
 """
     block(array_of_arrays)
@@ -346,15 +346,16 @@ end
 
 
 
-lay(iter) = _lay(iter)
+lay(iter) = if isempty(iter) iter else _lay(iter) end
 
 lay(f, iter; dims) = _lay(dims, f(x) for x in iter)
 lay(f, iter) = _lay(f(x) for x in iter)
 lay(f, xx, xs...; dims) = _lay(dims, f(xy...) for xy in zip(xx, xs...))
 lay(f, xx, xs...) = _lay(f(xy...) for xy in zip(xx, xs...))
 
-_lay(iter) = _lay(1 + ndims(first(iter)), iter)
+_lay(iter) = if isempty(iter) iter else _lay(1 + ndims(first(iter)), iter) end
 function _lay(dims::Integer, iter)
+    if isempty(iter) return iter end
     elsize = size(first(iter))
     newsize = (elsize[1:dims-1]..., 1, elsize[dims:end]...)
     hvncat(dims, reshape.(iter, newsize...)...)
@@ -367,5 +368,20 @@ function eachfiber(A; dim=1)
     end
 end
 
+
+smthmap(f,xx,xs...) = filter(!isnothing, map(f,xx,xs...))
+
+function montage(x; drop=1)
+    @assert !isempty(x)
+    tilewidth = findwidth_(length(x))
+    xx = [x; [0 * first(x) for _ in 1:(tilewidth*(tilewidth*4÷3) - length(x))]]
+    block(reshape(xx, tilewidth, tilewidth*4÷3))[1:drop:end, 1:drop:end]
+end
+
+function findwidth_(len)
+    findfirst(1:len^2*4) do n
+        n*(n*4÷3) >= len
+    end
+end
 
 end # module ArrayAssemblers
